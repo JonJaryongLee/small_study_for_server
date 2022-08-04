@@ -1,0 +1,137 @@
+shutdown -P now		즉시 종료
+shutdown -P +10		10분후 종료
+shutdown -r 22:00		오후 10시에 재부팅
+shutdown -c		예약된 셧다운일정 취소
+shutdown -k +15		현재 접속한 사용자에게 15분후에 종료한다는 "메세지만" 보내며, 실제 종료는 되지 않음
+
+reboot			재부팅
+
+logout 또는 exit		접속종료
+
+
+history			기존에 사용했던 명령 확인
+history -c			기존 히스토리 삭제
+
+
+systemctl enable ssh		컴퓨터 켜짐과 동시에 ssh 실행
+systemctl start ssh			ssh 실행
+systemctl status ssh		ssh 상태
+
+스왑 파일(.swp) 은 정상적으로 종료하지 않았을 경우 생김(vi에서 도중에 꺼버렸거나.)
+이 경우 vi가 작동 안함.
+이걸 삭제해줘야 정상적으로 돌아감.
+
+https://www.yalco.kr/35_linux/
+
+여기있는거 대부분 참조
+
+rm -f 파일명 : 강제삭제(force)
+
+명령을 한 줄에 이어서 쓸 때는 ; 을 쓴다.
+
+1. wget
+만약 다운받은 파일 이름을 바꾸고싶다면
+wget -O paris.jpg https://~~
+
+2. cat
+콘솔에 찍어보고 싶으면
+cat 파일명
+
+3. 코드 안에 필요한 부분만 찾고싶으면
+grep '찾고싶은문자열' test.txt
+
+4. | (파이프 키)
+명령어 결합
+ex) ls --help | grep sort
+ls 도움말중에 sort라는 부분만 찾아줘~
+당연히 계속 연속해서 파이프키를 결합시킬수 있음
+ls --help | grep sort | grep file
+
+
+5. ps aux 
+현재 실행중인 프로세스 확인
+apache를 찾고싶으면 ps aux | grep apache
+
+6. htop (apt install 필요)
+작업관리자
+
+7. >
+IO Redirection
+왼쪽의 결과를 오른쪽으로
+ls -l > result.txt
+원래라면 ls -l 했을때 콘솔에 그 결과가 나오는것이 정상인데, 해당 출력의 결과를 result.txt로 돌린 것.
+하지만 에러 내용은 저장이 안 됨. 그때는 다음과 같이 입력해줘야 됨
+rm something.txt 2> error.log
+여기서 2는 모드라고 생각하면 된다. 첫번째 명령문에선 1이 생략되었다고 생각하면 되는데, 성공결과를 저장.
+2는 에러가 떴을 때 에러결과를 저장
+그럼 둘을 합칠수도 있겠지?
+rm something.txt 1> result.txt 2> error.log
+참고로, 계속 실행해보면 알겠지만 result.txt와 error.log에서 원래 있던 결과는 지워지고 새로 쓰여진다.
+
+8. echo "~~~"
+입력한 문자열 출력
+
+9. 자동완성 (zsh)
+cd /home/gnucs/jony
+이걸 zsh에선
+cd /h/g/j 만 치고 tab키 누르면 완성됨
+
+10. 경로 이동(zsh)
+cd /home/gnucs/jony 
+여기서 jony가 아니라 david로 가고싶을경우
+cd jony david
+이렇게만 입력하면 됨
+
+11. touch a.txt b.txt c.txt
+빈 파일 생성
+
+12. file 파일명
+파일이 어떤 파일인지 알려고 할 때 사용. 왜 중요하냐면, 리눅스는 확장자가 편의를 위한 것이라 의미가 없기 때문
+
+13. find
+탐색
+ex)
+find /etc -name "*.conf"  : /etc 디렉터리 하위 확장명이 .conf인 파일 검색
+find /home -user jony  : /home 디렉터리 하위에 소유자가 jony인 파일 검색
+find ~ -perm 644  : 현재 사용자의 홈 디렉터리 하위에 허가권이 644인 파일 검색
+find /usr/bin -size +10k -size -100k  : /usr/bin 디렉터리 하위에 파일크기가 10kb~100kb인 파일 검색
+
+14. apt
+	-y install 이름: 설치. -y : 설치시 메세지에 yes처리
+	remove 이름: 삭제
+	purge 이름: 패키지 삭제 및 설정파일까지 제거
+	autoremove : 사용안하는 패키지 삭제
+	autoclean: 설치 시 내려받기한 파일 및 과거의 파일 제거
+
+15. mount
+vmware 에 iso 파일을 집어넣고, 부팅시 실행 체크
+그러면, /dev/cdrom 에 iso가 들어가는것이다.
+일단, 기존 마운트되어있을수있으니 언마운트 시켜주면,
+umount /dev/cdrom
+만약 not mounted 경고가 나오면 성공이다. 애초에 마운트되어있는게 없기 때문
+이걸 쓰려면, 마운트를 시켜줘야한다
+mkdir /media/cdrom
+mount /dev/cdrom /media/cdrom
+그러면 /media/cdrom 에서 확인 가능
+사용이 끝나면 언마운트 해줘야한다. 이건, /media/cdrom 이 현재 디렉터리가 아닐때만 가능하다.
+umount /media/cdrom	unmount가 아니라 umount임에 유의
+
+16. fdisk
+장착한 하드디스크를 쓰려면 파티션만들고, 포맷하고, 마운트해야한다.
+sudo fdisk /dev/sd?
+n
+p
+1
+enter
+enter
+p
+w
+
+그 다음 다음 명령어로 포맷
+sudo mkfs.ext4 /dev/sd?1
+이후 마운트하면 된다.
+
+16. &
+이건 백그라운드 사용할때다.
+실행명령 맨 마지막에 & 으로 붙여두면 된다.
+그런데, vi 같이 꼭 터미널을 써야할 프로그램이면 백그라운드는 무의미하다.
